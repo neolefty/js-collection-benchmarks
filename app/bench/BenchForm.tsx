@@ -2,14 +2,10 @@
 
 import { Fragment } from "react"
 import { capitalCase } from "change-case"
-import {
-    BenchConfig,
-    BenchInputs,
-    useBenchMachine,
-} from "@/app/bench/BenchMachine"
+import { BenchConfig, BenchInputs, useBenchSetup } from "@/app/bench/BenchSetup"
 
-export const BenchMarks = () => {
-    const machine = useBenchMachine()
+export const BenchForm = () => {
+    const machine = useBenchSetup()
     return (
         <form
             onSubmit={machine.running ? machine.onCancel : machine.onStart}

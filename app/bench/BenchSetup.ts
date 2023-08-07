@@ -24,14 +24,14 @@ interface BenchState extends BenchConfig {
     running?: boolean
 }
 
-interface BenchMachine extends BenchState {
+interface BenchSetup extends BenchState {
     onStart: (e: FormEvent) => void
     onCancel: (e: FormEvent) => void
     onReset: (e: FormEvent) => void
     dispatch: Dispatch<Partial<BenchState>>
 }
 
-export const useBenchMachine = (): BenchMachine => {
+export const useBenchSetup = (): BenchSetup => {
     const [state, dispatch] = useReducer<typeof MergeReducer<BenchState>>(
         MergeReducer,
         INITIAL_BENCH_STATE,
