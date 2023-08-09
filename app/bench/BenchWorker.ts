@@ -49,7 +49,7 @@ export const runBenchmark = async (
             if (printDebug) console.log({ [benchType]: scratch })
             break
         }
-        case "immutable list": {
+        case "immutable List": {
             let scratch = ImList(contents)
             iterations.forEach(() => {
                 scratch = scratch.withMutations((mutable) =>
@@ -64,7 +64,7 @@ export const runBenchmark = async (
             if (printDebug) console.log({ [benchType]: scratch.toArray() })
             break
         }
-        case "immutable map": {
+        case "immutable Map": {
             let scratch = ImMap(contents.entries())
             iterations.forEach(() => {
                 scratch = scratch.withMutations((mutable) =>
@@ -79,13 +79,30 @@ export const runBenchmark = async (
             if (printDebug) console.log({ [benchType]: scratch.toObject() })
             break
         }
+        case "Map": {
+            let scratch = new Map(contents.entries())
+            iterations.forEach(() => {
+                scratch = new Map(scratch.entries())
+                mutations.forEach((i) =>
+                    scratch.set(Math.floor(Math.random() * scratch.size), i),
+                )
+            })
+            break
+        }
         case "sleep": {
             await sleep(config.collectionSize * config.iterations * 0.000001)
             break
         }
         case "overhead only": {
             const scratch = [...contents]
-            iterations.forEach(() => (scratch[0] = 0))
+            iterations.forEach(() => {
+                // no copying, just mutating
+                mutations.forEach(
+                    (i) =>
+                        (scratch[Math.floor(Math.random() * scratch.length)] =
+                            i),
+                )
+            })
             break
         }
         default:

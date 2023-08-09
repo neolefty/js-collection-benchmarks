@@ -14,9 +14,11 @@ import {
 export type BenchMarkType =
     | "array" // [...a]
     | "object" // {...o}
-    | "immutable list" // List.withMutations()
-    | "immutable set" // Set.withMutations()
-    | "immutable map" // Map.withMutations()
+    | "Set"
+    | "Map"
+    | "immutable List" // List.withMutations()
+    | "immutable Set" // Set.withMutations()
+    | "immutable Map" // Map.withMutations()
     | "structura" // produce()
     | "immer" // produce()
     | "overhead only" // only do framework stuff
@@ -25,9 +27,11 @@ export type BenchMarkType =
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "array",
     "object",
-    "immutable list",
-    "immutable set",
-    "immutable map",
+    "Set",
+    "Map",
+    "immutable List",
+    "immutable Set",
+    "immutable Map",
     "immer",
     "structura",
     "overhead only",
