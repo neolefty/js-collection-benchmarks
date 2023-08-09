@@ -103,7 +103,7 @@ export const BenchPage = () => {
 
 const fix = (n: number, name: keyof BenchConfig): number =>
     name === "mutationFraction"
-        ? Math.min(Math.max(0, n), 1)
+        ? Math.min(Math.max(0, n), 10)
         : Math.max(0, Math.floor(n))
 
 const step = (name: keyof BenchConfig) =>

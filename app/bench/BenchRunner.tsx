@@ -25,6 +25,7 @@ export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
             dispatch({ running: true })
             ;(async () => {
                 for (const benchType of BenchMarkTypes) {
+                    console.log(`Running ${benchType} ...`)
                     const elapsed = await worker.runBenchmark(
                         extractConfig(setup),
                         benchType,

@@ -12,13 +12,15 @@ import {
 } from "@/app/_util/MergeReducer"
 
 export type BenchMarkType =
-    | "array"
-    | "object"
-    | "immutable list"
-    | "immutable set"
-    | "immutable map"
-    | "structura"
-    | "immer"
+    | "array" // [...a]
+    | "object" // {...o}
+    | "immutable list" // List.withMutations()
+    | "immutable set" // Set.withMutations()
+    | "immutable map" // Map.withMutations()
+    | "structura" // produce()
+    | "immer" // produce()
+    | "overhead only" // only do framework stuff
+    | "sleep" // sleep 1ns per operation
 
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "array",
@@ -28,6 +30,8 @@ export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "immutable map",
     "immer",
     "structura",
+    "overhead only",
+    "sleep",
 ]
 
 export interface BenchConfig {
