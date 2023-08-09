@@ -1,12 +1,34 @@
 import {
     Dispatch,
     FormEvent,
+    Reducer,
     useCallback,
-    useEffect,
     useMemo,
     useReducer,
 } from "react"
-import { MergeReducer } from "@/app/_util/MergeReducer"
+import {
+    createResettableMergeReducer,
+    MergeReducer,
+} from "@/app/_util/MergeReducer"
+
+export type BenchMarkType =
+    | "array"
+    | "object"
+    | "immutable list"
+    | "immutable set"
+    | "immutable map"
+    | "structura"
+    | "immer"
+
+export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
+    "array",
+    "object",
+    "immutable list",
+    "immutable set",
+    "immutable map",
+    "immer",
+    "structura",
+]
 
 export interface BenchConfig {
     collectionSize: number // how big is the collection we're operating on
@@ -22,43 +44,68 @@ export const BenchInputs: ReadonlyArray<keyof BenchConfig> = [
 
 interface BenchState extends BenchConfig {
     running?: boolean
+    start?: boolean
 }
 
-interface BenchSetup extends BenchState {
+const INITIAL_BENCH_STATE: BenchState = {
+    collectionSize: 1000,
+    iterations: 1000,
+    mutationFraction: 0.1,
+}
+
+export interface BenchSetup extends BenchState {
     onStart: (e: FormEvent) => void
     onCancel: (e: FormEvent) => void
     onReset: (e: FormEvent) => void
     dispatch: Dispatch<Partial<BenchState>>
+    onBenchmarkResult: (benchType: BenchMarkType, elapsedMs: number) => void
+    results: Partial<Record<BenchMarkType, number>>
 }
+
+const DEFAULT_RESULTS: BenchSetup["results"] = {}
+const ResultsReducer = createResettableMergeReducer(DEFAULT_RESULTS)
 
 export const useBenchSetup = (): BenchSetup => {
     const [state, dispatch] = useReducer<typeof MergeReducer<BenchState>>(
         MergeReducer,
         INITIAL_BENCH_STATE,
     )
+    const [results, resultsDispatch] = useReducer(
+        ResultsReducer,
+        DEFAULT_RESULTS,
+    )
+
+    // Ensure not recreated, to avoid triggering useEffect() in components
+    const onBenchmarkResult = useCallback<BenchSetup["onBenchmarkResult"]>(
+        (benchType, elapsedMs) => {
+            resultsDispatch({ [benchType]: elapsedMs })
+        },
+        [],
+    )
+    const onStart = useCallback((e: FormEvent) => {
+        dispatch({ start: true })
+        e.preventDefault()
+    }, [])
+    const onCancel = useCallback((e: FormEvent) => {
+        dispatch({ start: false })
+        e.preventDefault()
+    }, [])
+    const onReset = useCallback((e: FormEvent) => {
+        dispatch(INITIAL_BENCH_STATE)
+        resultsDispatch(null)
+        e.preventDefault()
+    }, [])
 
     return useMemo(
         () => ({
             ...state,
+            results,
             dispatch,
-            onStart: (e: FormEvent) => {
-                dispatch({ running: true })
-                e.preventDefault()
-            },
-            onCancel: (e: FormEvent) => {
-                dispatch({ running: false })
-                e.preventDefault()
-            },
-            onReset: (e: FormEvent) => {
-                dispatch(INITIAL_BENCH_STATE)
-                e.preventDefault()
-            },
+            onStart,
+            onCancel,
+            onReset,
+            onBenchmarkResult,
         }),
-        [state],
+        [state, results],
     )
-}
-const INITIAL_BENCH_STATE: BenchState = {
-    collectionSize: 1000,
-    iterations: 1000,
-    mutationFraction: 0.1,
 }
