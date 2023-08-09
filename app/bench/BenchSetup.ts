@@ -36,6 +36,12 @@ export interface BenchConfig {
     mutationFraction: number // between 0 and 1 — the fraction of items changed on each loop
 }
 
+export const extractConfig = <T extends BenchConfig>(t: T): BenchConfig => ({
+    collectionSize: t.collectionSize,
+    iterations: t.iterations,
+    mutationFraction: t.mutationFraction,
+})
+
 export const BenchInputs: ReadonlyArray<keyof BenchConfig> = [
     "collectionSize",
     "iterations",

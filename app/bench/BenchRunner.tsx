@@ -1,6 +1,11 @@
 "use client"
 
-import { BenchMarkTypes, BenchSetup } from "@/app/bench/BenchSetup"
+import {
+    BenchConfig,
+    BenchMarkTypes,
+    BenchSetup,
+    extractConfig,
+} from "@/app/bench/BenchSetup"
 import { useEffect } from "react"
 import {
     createWorkerFactory,
@@ -16,17 +21,18 @@ export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
     useEffect(() => {
         // start
         if (start && !running) {
-            console.log("Starting")
             // TODO check whether still mounted
             dispatch({ running: true })
             ;(async () => {
                 for (const benchType of BenchMarkTypes) {
-                    const elapsed = await worker.runBenchmark(setup, benchType)
+                    const elapsed = await worker.runBenchmark(
+                        extractConfig(setup),
+                        benchType,
+                    )
                     onBenchmarkResult(benchType, elapsed)
                 }
                 dispatch({ running: false, start: false })
             })()
-            console.log("finished")
         }
         // cancel
         if (!start && running) {
