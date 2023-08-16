@@ -1,8 +1,20 @@
 import { BenchConfig, BenchMarkType } from "@/app/bench/BenchSetup"
 import { ReadonlyNumberRange } from "@/app/_util/NumberRange"
-import { List as ImList, Map as ImMap } from "immutable"
+import { BenchWorkers } from "@/app/bench/BenchWorkers"
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+/**
+ * Runs a benchmark using a particular type of collection.
+ * @param basis data to create container instances from
+ * @param iterations number of times to run a benchmark step (which is probably copying the collection)
+ * @param mutations within each step, how many mutations to make to the collection
+ * @param debugLabel if present, print out debug info, with this label
+ */
+export type BenchWorker = (
+    basis: ReadonlyArray<number>,
+    iterations: ReadonlyArray<number>,
+    mutations: ReadonlyArray<number>,
+    debugLabel?: string,
+) => Promise<void>
 
 const roundedPerformance = Object.freeze({
     /** Rounded to 100 microseconds. https://developer.mozilla.org/en-US/docs/Web/API/Performance/now */
@@ -19,94 +31,16 @@ export const runBenchmark = async (
         0,
         Math.round(config.collectionSize * config.mutationFraction),
     )
-    const contents = ReadonlyNumberRange(0, config.collectionSize)
+    const basis = ReadonlyNumberRange(0, config.collectionSize)
     let timeStart = roundedPerformance.now()
-    switch (benchType) {
-        case "array": {
-            let scratch = [...contents]
-            iterations.forEach(() => {
-                scratch = [...scratch]
-                mutations.forEach(
-                    (i) =>
-                        (scratch[Math.floor(Math.random() * scratch.length)] =
-                            i),
-                )
-            })
-            if (printDebug) console.log({ [benchType]: scratch })
-            break
-        }
-        case "object": {
-            let scratch = Object.fromEntries(contents.entries())
-            iterations.forEach(() => {
-                scratch = { ...scratch }
-                mutations.forEach(
-                    (i) =>
-                        (scratch[
-                            Math.floor(Math.random() * config.collectionSize)
-                        ] = i),
-                )
-            })
-            if (printDebug) console.log({ [benchType]: scratch })
-            break
-        }
-        case "immutable List": {
-            let scratch = ImList(contents)
-            iterations.forEach(() => {
-                scratch = scratch.withMutations((mutable) =>
-                    mutations.forEach((i) =>
-                        mutable.set(
-                            Math.floor(Math.random() * scratch.size),
-                            i,
-                        ),
-                    ),
-                )
-            })
-            if (printDebug) console.log({ [benchType]: scratch.toArray() })
-            break
-        }
-        case "immutable Map": {
-            let scratch = ImMap(contents.entries())
-            iterations.forEach(() => {
-                scratch = scratch.withMutations((mutable) =>
-                    mutations.forEach((i) =>
-                        mutable.set(
-                            Math.floor(Math.random() * scratch.size),
-                            i,
-                        ),
-                    ),
-                )
-            })
-            if (printDebug) console.log({ [benchType]: scratch.toObject() })
-            break
-        }
-        case "Map": {
-            let scratch = new Map(contents.entries())
-            iterations.forEach(() => {
-                scratch = new Map(scratch.entries())
-                mutations.forEach((i) =>
-                    scratch.set(Math.floor(Math.random() * scratch.size), i),
-                )
-            })
-            break
-        }
-        case "sleep": {
-            await sleep(config.collectionSize * config.iterations * 0.000001)
-            break
-        }
-        case "overhead only": {
-            const scratch = [...contents]
-            iterations.forEach(() => {
-                // no copying, just mutating
-                mutations.forEach(
-                    (i) =>
-                        (scratch[Math.floor(Math.random() * scratch.length)] =
-                            i),
-                )
-            })
-            break
-        }
-        default:
-            timeStart = -Infinity
-    }
+    const worker = BenchWorkers[benchType]
+    if (worker)
+        await worker(
+            basis,
+            iterations,
+            mutations,
+            printDebug ? benchType : undefined,
+        )
+    else timeStart = -Infinity
     return roundedPerformance.now() - timeStart
 }
