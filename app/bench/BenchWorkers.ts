@@ -35,6 +35,23 @@ const ObjectWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const FrozenObjectWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = Object.fromEntries(basis.entries())
+    iterations.forEach(() => {
+        scratch = { ...scratch }
+        mutations.forEach(
+            (i) => (scratch[Math.floor(Math.random() * basis.length)] = i),
+        )
+        scratch = Object.freeze(scratch)
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const ImmutableListWorker: BenchWorker = async (
     basis,
     iterations,
@@ -117,6 +134,7 @@ const OverheadOnlyWorker: BenchWorker = async (
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     array: ArrayWorker,
     object: ObjectWorker,
+    "object with freeze": FrozenObjectWorker,
     "immutable List": ImmutableListWorker,
     "immutable Map": ImmutableMapWorker,
     Map: MapWorker,

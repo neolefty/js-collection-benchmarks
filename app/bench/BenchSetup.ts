@@ -14,6 +14,7 @@ import {
 export type BenchMarkType =
     | "array" // [...a]
     | "object" // {...o}
+    | "object with freeze"
     | "Set"
     | "Map"
     | "immutable List" // List.withMutations()
@@ -27,6 +28,7 @@ export type BenchMarkType =
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "array",
     "object",
+    "object with freeze",
     "Set",
     "Map",
     "immutable List",
