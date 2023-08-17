@@ -6,7 +6,7 @@ import {
     BenchSetup,
     extractConfig,
 } from "@/app/bench/BenchSetup"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import {
     createWorkerFactory,
     terminate,
@@ -18,19 +18,36 @@ const createWorker = createWorkerFactory(() => import("./BenchWorker"))
 export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
     const worker = useWorker(createWorker)
     const { start, running, dispatch, onBenchmarkResult } = setup
+
+    // real-time sync so that the main runner (below) can see when to stop
+    const stopRef = useRef<boolean>()
+    useEffect(() => {
+        stopRef.current = !start
+    }, [start])
+
+    // stop when unmounted
+    useEffect(
+        () => () => {
+            stopRef.current = true
+        },
+        [],
+    )
+
+    // main runner effect
     useEffect(() => {
         // start
         if (start && !running) {
-            // TODO check whether still mounted
             dispatch({ running: true })
             ;(async () => {
                 for (const benchType of BenchMarkTypes) {
-                    console.log(`Running ${benchType} ...`)
-                    const elapsed = await worker.runBenchmark(
-                        extractConfig(setup),
-                        benchType,
-                    )
-                    onBenchmarkResult(benchType, elapsed)
+                    if (!stopRef.current) {
+                        console.log(`Running ${benchType} ...`)
+                        const elapsed = await worker.runBenchmark(
+                            extractConfig(setup),
+                            benchType,
+                        )
+                        onBenchmarkResult(benchType, elapsed)
+                    }
                 }
                 dispatch({ running: false, start: false })
             })()
