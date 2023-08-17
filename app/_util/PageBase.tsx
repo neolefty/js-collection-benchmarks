@@ -13,8 +13,8 @@ export const PageBase = ({ children }: PropsWithChildren) => {
 }
 
 export const NavBar = () => (
-    <header className="w-screen flex flex-row  justify-between text-xl border-b-4 border-green-300 dark:border-green-700  bg-amber-400 dark:bg-amber-900 gap-1 px-2">
-        <h1 className="flex items-end font-bold px-2 py-1">
+    <header className="w-screen flex flex-row  justify-between text-xl border-b-8 border-primary bg-accent gap-2 px-2">
+        <h1 className="flex items-end font-bold px-2 py-1 text-accent-content">
             JS Collection Benchmarks
         </h1>
         <Nav route="bench">Benchmarks</Nav>
@@ -26,13 +26,13 @@ const Nav = ({ route, children }: { route: string; children: ReactNode }) => {
     const path = usePathname()
     const isCurrent = path.toLowerCase().indexOf(route) >= 0
     return isCurrent ? (
-        <nav className="flex-grow text-center bg-green-300 dark:bg-green-700 px-2 py-1 mt-2 rounded-t-lg">
+        <nav className="flex-grow text-center bg-primary text-primary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg">
             {children}
         </nav>
     ) : (
         <a
             href={`/${route}`}
-            className="flex-grow text-center bg-green-500 dark:bg-green-900 px-2 py-1 mt-2 rounded-t-lg"
+            className="flex-grow text-center bg-secondary text-secondary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg"
         >
             {children}
         </a>

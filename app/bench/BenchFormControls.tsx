@@ -28,12 +28,15 @@ export const BenchFormControls = ({ setup }: { setup: BenchSetup }) => (
             </Fragment>
         ))}
         <section aria-label="actions" className="flex gap-3 col-span-2 mt-4">
-            <button className="btn" disabled={setup.start !== setup.running}>
+            <button
+                className="btn btn-primary"
+                disabled={setup.start !== setup.running}
+            >
                 {setup.running ? "Cancel" : "Start"}
             </button>
             <button
                 disabled={setup.start || setup.running}
-                className="btn dark:bg-green-900 bg-green-300"
+                className="btn btn-secondary"
                 onClick={setup.onReset}
             >
                 Reset
