@@ -22,20 +22,6 @@ export const BenchFormControls = ({ setup }: { setup: BenchSetup }) => (
                     max={max(name)}
                     value={setup[name]}
                     step={step(name)}
-                    onKeyDown={(e) => {
-                        if (e.key === "ArrowUp") {
-                            e.preventDefault()
-                            setup.dispatch({
-                                [name]: fix(setup[name] + keyStep(name), name),
-                            })
-                        }
-                        if (e.key === "ArrowDown") {
-                            e.preventDefault()
-                            setup.dispatch({
-                                [name]: fix(setup[name] - keyStep(name), name),
-                            })
-                        }
-                    }}
                     formNoValidate
                     disabled={setup.start || setup.running}
                 />
@@ -61,12 +47,7 @@ const fix = (n: number, name: keyof BenchConfig): number =>
         ? Math.min(Math.max(0, n), 10)
         : Math.max(0, Math.floor(n))
 
-// legal values
 const step = (name: keyof BenchConfig) =>
-    name === "mutationFraction" ? 0.01 : 1
-
-// amount to increment/decrement on keyboard arrow press
-const keyStep = (name: keyof BenchConfig) =>
     name === "mutationFraction" ? 0.1 : 100
 
 const max = (name: keyof BenchConfig) =>

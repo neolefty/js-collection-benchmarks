@@ -1,7 +1,7 @@
 import { BenchWorker } from "@/app/bench/BenchWorker"
 import { BenchMarkType } from "@/app/bench/BenchSetup"
 import { it } from "node:test"
-import { List as ImList, Map as ImMap } from "immutable"
+import { List as ImList, Map as ImMap, Set as ImSet } from "immutable"
 
 const ArrayWorker: BenchWorker = async (
     basis,
@@ -86,6 +86,23 @@ const ImmutableMapWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch.toObject() })
 }
 
+const ImmutableSetWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = ImSet(basis)
+    iterations.forEach(() => {
+        scratch = scratch.withMutations((mutable) =>
+            mutations.forEach(() =>
+                mutable.delete(mutable.first()).add(Math.random()),
+            ),
+        )
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch.toArray() })
+}
+
 const MapWorker: BenchWorker = async (
     basis,
     iterations,
@@ -156,6 +173,7 @@ export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     "object with freeze": FrozenObjectWorker,
     "immutable List": ImmutableListWorker,
     "immutable Map": ImmutableMapWorker,
+    "immutable Set": ImmutableSetWorker,
     Map: MapWorker,
     Set: SetWorker,
     sleep: SleepWorker,
