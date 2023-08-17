@@ -1,9 +1,10 @@
 "use client"
 
 import { useBenchSetup } from "@/app/bench/BenchSetup"
-import { BenchRunner } from "@/app/bench/BenchRunner"
+import { useBenchRunner } from "@/app/bench/BenchRunner"
 import { BenchFormControls } from "@/app/bench/BenchFormControls"
 import { BenchResultsDisplay } from "@/app/bench/BenchResultsDisplay"
+import { BenchDebug } from "@/app/bench/BenchDebug"
 
 export const BenchPage = () => {
     const setup = useBenchSetup()
@@ -16,26 +17,7 @@ export const BenchPage = () => {
             >
                 <BenchFormControls setup={setup} />
                 <BenchResultsDisplay setup={setup} />
-                <details className="col-span-2 w-full bg-accent text-accent-content mt-4 py-2">
-                    <summary className="text-center">State (debug)</summary>
-                    <p className="text-center py-3">
-                        Status:{" "}
-                        <strong>
-                            {[
-                                setup.start && "started",
-                                setup.running && "running",
-                            ]
-                                .filter(Boolean)
-                                .join(", ") || "Not started"}
-                        </strong>
-                    </p>
-                    <code>
-                        {JSON.stringify(setup)
-                            .replaceAll(":", ": ")
-                            .replaceAll(",", ", ")}
-                    </code>
-                </details>
-                <BenchRunner setup={setup} />
+                <BenchDebug setup={setup} />
             </form>
         </>
     )

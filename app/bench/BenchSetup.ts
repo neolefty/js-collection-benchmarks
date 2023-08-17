@@ -10,6 +10,7 @@ import {
     createResettableMergeReducer,
     MergeReducer,
 } from "@/app/_util/MergeReducer"
+import { useBenchRunner } from "@/app/bench/BenchRunner"
 
 export type BenchMarkType =
     | "array" // [...a]
@@ -129,7 +130,7 @@ export const useBenchSetup = (): BenchSetup => {
         e.preventDefault()
     }, [])
 
-    return useMemo(
+    const result = useMemo(
         () => ({
             ...state,
             results,
@@ -139,6 +140,10 @@ export const useBenchSetup = (): BenchSetup => {
             onReset,
             onBenchmarkResult,
         }),
-        [state, results],
+        [state, results, onStart, onCancel, onReset, onBenchmarkResult],
     )
+
+    useBenchRunner(result)
+
+    return result
 }

@@ -15,7 +15,8 @@ import {
 
 const createWorker = createWorkerFactory(() => import("./BenchWorker"))
 
-export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
+/** Trigger benchmarks as side effects of changes in setup. */
+export const useBenchRunner = (setup: BenchSetup) => {
     const worker = useWorker(createWorker)
     const { start, running, dispatch, onBenchmarkResult } = setup
 
@@ -24,6 +25,11 @@ export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
     useEffect(() => {
         stopRef.current = !start
     }, [start])
+
+    const setupRef = useRef<BenchSetup>()
+    useEffect(() => {
+        setupRef.current = setup
+    }, [setup])
 
     // stop when unmounted
     useEffect(
@@ -40,10 +46,10 @@ export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
             dispatch({ running: true })
             ;(async () => {
                 for (const benchType of BenchMarkTypes) {
-                    if (!stopRef.current) {
+                    if (!stopRef.current && setupRef.current) {
                         // console.log(`Running ${benchType} ...`)
                         const elapsed = await worker.runBenchmark(
-                            extractConfig(setup),
+                            extractConfig(setupRef.current),
                             benchType,
                         )
                         onBenchmarkResult(benchType, elapsed)
@@ -60,9 +66,4 @@ export const BenchRunner = ({ setup }: { setup: BenchSetup }) => {
             if (terminated) dispatch({ running: false })
         }
     }, [worker, start, running, dispatch, onBenchmarkResult])
-
-    return [
-        setup.start ? "Start" : undefined,
-        setup.running ? "Running" : undefined,
-    ]
 }
