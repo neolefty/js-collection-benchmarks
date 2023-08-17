@@ -18,7 +18,7 @@ export type BenchWorker = (
 
 const roundedPerformance = Object.freeze({
     /** Rounded to 100 microseconds. https://developer.mozilla.org/en-US/docs/Web/API/Performance/now */
-    now: () => Math.round(performance.now() * 10_000) * 0.0001,
+    now: () => Number(Math.round(performance.now() * 10_000) + "e-4"),
 })
 
 export const runBenchmark = async (
