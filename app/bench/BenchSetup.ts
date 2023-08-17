@@ -13,6 +13,7 @@ import {
 
 export type BenchMarkType =
     | "array" // [...a]
+    | "array with freeze" // [...a]
     | "object" // {...o}
     | "object with freeze"
     | "Set"
@@ -20,22 +21,34 @@ export type BenchMarkType =
     | "immutable List" // List.withMutations()
     | "immutable Set" // Set.withMutations()
     | "immutable Map" // Map.withMutations()
-    | "structura" // produce()
-    | "immer" // produce()
+    | "immer object" // produce()
+    | "immer array" // produce()
+    | "structura object" // produce()
+    | "structura array" // produce()
     | "overhead only" // only do framework stuff
     | "sleep" // sleep 1ns per operation
 
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
-    "array",
+    // maps
     "object",
     "object with freeze",
-    "Set",
     "Map",
-    "immutable List",
-    "immutable Set",
     "immutable Map",
-    "immer",
-    "structura",
+    "immer object",
+    "structura object",
+
+    // arrays & lists
+    "array",
+    "array with freeze",
+    "immutable List",
+    "immer array",
+    "structura array",
+
+    // sets
+    "Set",
+    "immutable Set",
+
+    // control
     "overhead only",
     "sleep",
 ]

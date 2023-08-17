@@ -2,6 +2,7 @@ import { BenchWorker } from "@/app/bench/BenchWorker"
 import { BenchMarkType } from "@/app/bench/BenchSetup"
 import { it } from "node:test"
 import { List as ImList, Map as ImMap, Set as ImSet } from "immutable"
+import { produce } from "immer"
 
 const ArrayWorker: BenchWorker = async (
     basis,
@@ -19,6 +20,23 @@ const ArrayWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const ImmerArrayWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = [...basis]
+    iterations.forEach(() => {
+        scratch = produce(scratch, (draft) => {
+            mutations.forEach(
+                (i) => (draft[Math.floor(Math.random() * draft.length)] = i),
+            )
+        })
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const ObjectWorker: BenchWorker = async (
     basis,
     iterations,
@@ -31,6 +49,23 @@ const ObjectWorker: BenchWorker = async (
         mutations.forEach(
             (i) => (scratch[Math.floor(Math.random() * basis.length)] = i),
         )
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
+const ImmerObjectWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = Object.fromEntries(basis.entries())
+    iterations.forEach(() => {
+        scratch = produce(scratch, (draft) => {
+            mutations.forEach(
+                (i) => (draft[Math.floor(Math.random() * basis.length)] = i),
+            )
+        })
     })
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
@@ -170,6 +205,8 @@ const OverheadOnlyWorker: BenchWorker = async (
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     array: ArrayWorker,
     object: ObjectWorker,
+    "immer array": ImmerObjectWorker,
+    "immer object": ImmerObjectWorker,
     "object with freeze": FrozenObjectWorker,
     "immutable List": ImmutableListWorker,
     "immutable Map": ImmutableMapWorker,
