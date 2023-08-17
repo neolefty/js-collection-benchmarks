@@ -102,6 +102,25 @@ const MapWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const SetWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = new Set(basis)
+    iterations.forEach(() => {
+        scratch = new Set(scratch.values())
+        if (mutations.length)
+            mutations.forEach(() => {
+                const deleted = scratch.delete(scratch.values().next().value)
+                if (deleted || scratch.size === 0) scratch.add(Math.random())
+                else console.log("Oops, deletion failed")
+            })
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const SleepWorker: BenchWorker = async (
@@ -138,6 +157,7 @@ export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     "immutable List": ImmutableListWorker,
     "immutable Map": ImmutableMapWorker,
     Map: MapWorker,
+    Set: SetWorker,
     sleep: SleepWorker,
     "overhead only": OverheadOnlyWorker,
 }
