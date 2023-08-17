@@ -14,7 +14,7 @@ export const BenchResultsDisplay = ({ setup }: { setup: BenchSetup }) => {
         Object.entries(setup.results).length > 0 && (
             <>
                 <h2 className="gap-3 col-span-2 mt-4 text-xl font-bold bg-primary text-primary-content w-full text-center py-3">
-                    Results
+                    Benchmark Results
                 </h2>
                 {BenchMarkTypes.map((benchType, i) => {
                     const elapsedMs = setup.results[benchType]

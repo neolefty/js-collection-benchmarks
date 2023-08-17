@@ -26,13 +26,13 @@ const Nav = ({ route, children }: { route: string; children: ReactNode }) => {
     const path = usePathname()
     const isCurrent = path.toLowerCase().indexOf(route) >= 0
     return isCurrent ? (
-        <nav className="flex-grow text-center bg-primary text-primary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg">
+        <nav className="flex-grow flex place-content-center items-center bg-primary text-primary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg">
             {children}
         </nav>
     ) : (
         <a
             href={`/${route}`}
-            className="flex-grow text-center bg-secondary text-secondary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg"
+            className="flex-grow flex place-content-center items-center bg-secondary text-secondary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg"
         >
             {children}
         </a>

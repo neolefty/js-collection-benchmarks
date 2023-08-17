@@ -83,14 +83,14 @@ interface BenchState extends BenchConfig {
 
 const INITIAL_BENCH_STATE: BenchState = {
     collectionSize: 1000,
-    iterations: 1000,
+    iterations: 100,
     mutationFraction: 0.1,
 }
 
 export interface BenchSetup extends BenchState {
-    onStart: (e: FormEvent) => void
-    onCancel: (e: FormEvent) => void
-    onReset: (e: FormEvent) => void
+    onStart: (e?: FormEvent) => void
+    onCancel: (e?: FormEvent) => void
+    onReset: (e?: FormEvent) => void
     dispatch: Dispatch<Partial<BenchState>>
     onBenchmarkResult: (benchType: BenchMarkType, elapsedMs: number) => void
     results: Partial<Record<BenchMarkType, number>>
@@ -116,18 +116,18 @@ export const useBenchSetup = (): BenchSetup => {
         },
         [],
     )
-    const onStart = useCallback((e: FormEvent) => {
+    const onStart = useCallback((e?: FormEvent) => {
         dispatch({ start: true })
-        e.preventDefault()
+        e?.preventDefault()
     }, [])
-    const onCancel = useCallback((e: FormEvent) => {
+    const onCancel = useCallback((e?: FormEvent) => {
         dispatch({ start: false })
-        e.preventDefault()
+        e?.preventDefault()
     }, [])
-    const onReset = useCallback((e: FormEvent) => {
+    const onReset = useCallback((e?: FormEvent) => {
         dispatch(INITIAL_BENCH_STATE)
         resultsDispatch(null)
-        e.preventDefault()
+        e?.preventDefault()
     }, [])
 
     const result = useMemo(

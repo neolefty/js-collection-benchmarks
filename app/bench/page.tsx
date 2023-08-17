@@ -5,7 +5,7 @@ import { useBenchSetup } from "@/app/bench/BenchSetup"
 const Benchmarks = () => {
     return (
         <PageBase>
-            <BenchPage />
+            <BenchPage showDebug autoRun />
         </PageBase>
     )
 }
