@@ -27,6 +27,7 @@ export type BenchMarkType =
     | "structura array" // produce()
     | "overhead only" // only do framework stuff
     | "sleep" // sleep 1ns per operation
+    | "divider" // display purposes only
 
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     // maps
@@ -36,6 +37,7 @@ export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "immutable Map",
     "immer object",
     "structura object",
+    "divider",
 
     // arrays & lists
     "array",
@@ -43,10 +45,12 @@ export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     "immutable List",
     "immer array",
     "structura array",
+    "divider",
 
     // sets
     "Set",
     "immutable Set",
+    "divider",
 
     // control
     "overhead only",

@@ -1,4 +1,4 @@
-import { BenchSetup } from "@/app/bench/BenchSetup"
+import { BenchMarkTypes, BenchSetup } from "@/app/bench/BenchSetup"
 import { Fragment } from "react"
 
 // Rounding via scientific notation brings all the kids to the yard — avoid things like "3.0000004"
@@ -11,17 +11,29 @@ export const BenchResultsDisplay = ({ setup }: { setup: BenchSetup }) =>
             <h2 className="gap-3 col-span-2 mt-4 text-xl font-bold bg-primary text-primary-content w-full text-center py-3">
                 Results
             </h2>
-            {Object.entries(setup.results).map(([benchType, elapsedMs]) => (
-                <Fragment key={benchType}>
-                    <div className="justify-self-end">{benchType}</div>
-                    <div className="justify-self-start">
-                        {elapsedMs === Infinity ? (
-                            "—"
+            {BenchMarkTypes.map((benchType, i) => {
+                const elapsedMs = setup.results[benchType]
+                return (
+                    <Fragment key={i}>
+                        {benchType === "divider" ? (
+                            <div className="col-span-2 border-secondary border-b-2 w-full" />
                         ) : (
-                            <strong>{round3(elapsedMs)} ms</strong>
+                            <>
+                                <div className="justify-self-end">
+                                    {benchType}
+                                </div>
+                                <div className="justify-self-start">
+                                    {elapsedMs === Infinity ||
+                                    elapsedMs === undefined ? (
+                                        "—"
+                                    ) : (
+                                        <strong>{round3(elapsedMs)} ms</strong>
+                                    )}
+                                </div>
+                            </>
                         )}
-                    </div>
-                </Fragment>
-            ))}
+                    </Fragment>
+                )
+            })}
         </>
     )

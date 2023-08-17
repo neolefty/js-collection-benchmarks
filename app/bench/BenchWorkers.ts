@@ -1,8 +1,8 @@
 import { BenchWorker } from "@/app/bench/BenchWorker"
 import { BenchMarkType } from "@/app/bench/BenchSetup"
-import { it } from "node:test"
 import { List as ImList, Map as ImMap, Set as ImSet } from "immutable"
-import { produce } from "immer"
+import { produce as immerProduce } from "immer"
+import { produce as structuraProduce } from "structurajs"
 
 const ArrayWorker: BenchWorker = async (
     basis,
@@ -20,6 +20,23 @@ const ArrayWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const FrozenArrayWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = Object.freeze([...basis])
+    iterations.forEach(() => {
+        const draft = [...scratch]
+        mutations.forEach(
+            (i) => (draft[Math.floor(Math.random() * draft.length)] = i),
+        )
+        scratch = Object.freeze(draft)
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const ImmerArrayWorker: BenchWorker = async (
     basis,
     iterations,
@@ -28,7 +45,24 @@ const ImmerArrayWorker: BenchWorker = async (
 ) => {
     let scratch = [...basis]
     iterations.forEach(() => {
-        scratch = produce(scratch, (draft) => {
+        scratch = immerProduce(scratch, (draft) => {
+            mutations.forEach(
+                (i) => (draft[Math.floor(Math.random() * draft.length)] = i),
+            )
+        })
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
+const StructuraArrayWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch: ReadonlyArray<number> = [...basis]
+    iterations.forEach(() => {
+        scratch = structuraProduce(scratch, (draft) => {
             mutations.forEach(
                 (i) => (draft[Math.floor(Math.random() * draft.length)] = i),
             )
@@ -61,7 +95,24 @@ const ImmerObjectWorker: BenchWorker = async (
 ) => {
     let scratch = Object.fromEntries(basis.entries())
     iterations.forEach(() => {
-        scratch = produce(scratch, (draft) => {
+        scratch = immerProduce(scratch, (draft) => {
+            mutations.forEach(
+                (i) => (draft[Math.floor(Math.random() * basis.length)] = i),
+            )
+        })
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
+const StructuraObjectWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = Object.fromEntries(basis.entries())
+    iterations.forEach(() => {
+        scratch = structuraProduce(scratch, (draft) => {
             mutations.forEach(
                 (i) => (draft[Math.floor(Math.random() * basis.length)] = i),
             )
@@ -175,12 +226,7 @@ const SetWorker: BenchWorker = async (
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const SleepWorker: BenchWorker = async (
-    basis,
-    iterations,
-    mutations,
-    debugLabel,
-) => {
+const SleepWorker: BenchWorker = async (basis, iterations, _, debugLabel) => {
     const ms = basis.length * iterations.length * 0.000001
     await sleep(ms)
     if (debugLabel) console.log({ [debugLabel]: `Slept ${ms} ms` })
@@ -205,9 +251,12 @@ const OverheadOnlyWorker: BenchWorker = async (
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     array: ArrayWorker,
     object: ObjectWorker,
-    "immer array": ImmerObjectWorker,
+    "immer array": ImmerArrayWorker,
     "immer object": ImmerObjectWorker,
+    "structura array": StructuraArrayWorker,
+    "structura object": StructuraObjectWorker,
     "object with freeze": FrozenObjectWorker,
+    "array with freeze": FrozenArrayWorker,
     "immutable List": ImmutableListWorker,
     "immutable Map": ImmutableMapWorker,
     "immutable Set": ImmutableSetWorker,
