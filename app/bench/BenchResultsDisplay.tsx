@@ -1,6 +1,6 @@
 import { BenchMarkTypes, BenchSetup } from "@/app/bench/BenchSetup"
 import { Fragment } from "react"
-import { nothing } from "immer"
+import { BenchmarkHeader2 } from "@/app/_util/BenchmarkHeader"
 
 // Rounding via scientific notation brings all the kids to the yard — avoid things like "3.0000004"
 // https://medium.com/@borisdedejski/rounding-numbers-on-x-decimal-places-in-javascript-5a4bc26e4149
@@ -13,9 +13,9 @@ export const BenchResultsDisplay = ({ setup }: { setup: BenchSetup }) => {
     return (
         Object.entries(setup.results).length > 0 && (
             <>
-                <h2 className="gap-3 col-span-2 mt-4 text-xl font-bold bg-primary text-primary-content w-full text-center py-3">
+                <BenchmarkHeader2 className="mt-2">
                     Benchmark Results
-                </h2>
+                </BenchmarkHeader2>
                 {BenchMarkTypes.map((benchType, i) => {
                     const elapsedMs = setup.results[benchType]
                     const showMs =

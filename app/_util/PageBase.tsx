@@ -2,6 +2,7 @@
 
 import { PropsWithChildren, ReactNode } from "react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 export const PageBase = ({ children }: PropsWithChildren) => {
     return (
@@ -30,11 +31,11 @@ const Nav = ({ route, children }: { route: string; children: ReactNode }) => {
             {children}
         </nav>
     ) : (
-        <a
+        <Link
             href={`/${route}`}
             className="flex-grow flex place-content-center items-center bg-secondary text-secondary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg"
         >
             {children}
-        </a>
+        </Link>
     )
 }

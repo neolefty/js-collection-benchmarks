@@ -5,13 +5,16 @@ import { BenchFormControls } from "@/app/bench/BenchFormControls"
 import { BenchResultsDisplay } from "@/app/bench/BenchResultsDisplay"
 import { BenchDebug } from "@/app/bench/BenchDebug"
 import { useEffect, useState } from "react"
+import { BenchmarkHeader2 } from "@/app/_util/BenchmarkHeader"
 
 export const BenchPage = ({
     showDebug,
     autoRun,
+    className,
 }: {
     showDebug?: boolean
     autoRun?: boolean
+    className?: string
 }) => {
     const setup = useBenchSetup()
     const [autoRan, setAutoRan] = useState(false)
@@ -26,7 +29,10 @@ export const BenchPage = ({
             <form
                 onSubmit={setup.running ? setup.onCancel : setup.onStart}
                 action="#"
-                className="grid justify-items-center items-center gap-3 grid-cols-2 pt-6"
+                className={
+                    "grid justify-items-center items-center gap-3 grid-cols-2 " +
+                        className || ""
+                }
             >
                 <BenchFormControls setup={setup} />
                 <BenchResultsDisplay setup={setup} />
