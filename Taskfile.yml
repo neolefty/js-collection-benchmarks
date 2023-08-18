@@ -1,6 +1,11 @@
 version: '3'
 
 tasks:
+  setup:
+    desc: "Install dependencies"
+    cmds:
+      - pnpm install
+
   dev:
     desc: "Run on localhost:3000"
     cmds:
