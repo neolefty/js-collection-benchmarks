@@ -1,7 +1,7 @@
 "use client"
 
 import { PropsWithChildren, ReactNode } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 
 export const PageBase = ({ children }: PropsWithChildren) => {
@@ -25,7 +25,9 @@ export const NavBar = () => (
 
 const Nav = ({ route, children }: { route: string; children: ReactNode }) => {
     const path = usePathname()
-    const isCurrent = path.toLowerCase().indexOf(route) >= 0
+    const pathElements = path.split("/")
+    const leaf = pathElements[pathElements.length - 1]
+    const isCurrent = leaf.toLowerCase() === route
     return isCurrent ? (
         <nav className="flex-grow flex place-content-center items-center bg-primary text-primary-content px-2 pb-1 pt-2 mt-2 rounded-t-lg">
             {children}

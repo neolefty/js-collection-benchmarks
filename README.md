@@ -24,7 +24,7 @@ task dev
 pnpm dev
 ```
 
-Open [http://localhost:3000/unframed](http://localhost:3000/unframed) with your browser to see the result. Or for navigation tabs, open [http://localhost:3000/bench](http://localhost:3000/bench) 
+Open [http://localhost:3000/js-benchmarks/unframed](http://localhost:3000/js-benchmarks/unframed) with your browser to see the result. Or for navigation tabs, open [http://localhost:3000/js-benchmarks/bench](http://localhost:3000/js-benchmarks/bench) 
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
