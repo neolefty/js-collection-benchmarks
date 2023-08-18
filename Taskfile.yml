@@ -5,3 +5,8 @@ tasks:
     desc: "Run on localhost:3000"
     cmds:
       - pnpm dev
+
+  build:
+    desc: "Build static files"
+    cmds:
+      - pnpm build
