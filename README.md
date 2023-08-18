@@ -1,6 +1,6 @@
 # JS Collection Benchmarks
 
-See https://neolefty.org/wordpress/
+See https://neolefty.org/wordpress/2023/08/19/benchmarking-javascript-collections/
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
