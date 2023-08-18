@@ -1,18 +1,30 @@
+# JS Collection Benchmarks
+
+See https://neolefty.org/wordpress/
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+Install [pnpm](https://pnpm.io/) (required) and [Task](https://taskfile.dev/) (recommended).
+
+Install dependencies
 
 ```bash
-npm run dev
+task setup
 # or
-yarn dev
+pnpm install
+```
+
+Then run the app locally
+
+```bash
+task dev
 # or
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/unframed](http://localhost:3000/unframed) with your browser to see the result. Or for navigation tabs, open [http://localhost:3000/bench](http://localhost:3000/bench) 
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

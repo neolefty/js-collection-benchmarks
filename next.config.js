@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: "export",
-    basePath: "js-benchmarks",,
+    basePath: "js-benchmarks",
 }
 
 module.exports = nextConfig
