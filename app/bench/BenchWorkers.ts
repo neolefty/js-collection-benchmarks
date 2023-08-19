@@ -205,6 +205,24 @@ const MapWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const MapFastCopyWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = new Map(basis.entries())
+    iterations.forEach(() => {
+        const tmp = new Map()
+        for (const entry of scratch.entries()) tmp.set(entry[0], entry[1])
+        scratch = tmp
+        mutations.forEach((i) =>
+            scratch.set(Math.floor(Math.random() * scratch.size), i),
+        )
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const SetWorker: BenchWorker = async (
     basis,
     iterations,
@@ -249,19 +267,23 @@ const OverheadOnlyWorker: BenchWorker = async (
 }
 
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
-    array: ArrayWorker,
     object: ObjectWorker,
-    "immer array": ImmerArrayWorker,
-    "immer object": ImmerObjectWorker,
-    "structura array": StructuraArrayWorker,
-    "structura object": StructuraObjectWorker,
     "object with freeze": FrozenObjectWorker,
+    "immer object": ImmerObjectWorker,
+    "structura object": StructuraObjectWorker,
+    "immutable Map": ImmutableMapWorker,
+    Map: MapWorker,
+    "Map with faster copy": MapFastCopyWorker,
+
+    array: ArrayWorker,
+    "immer array": ImmerArrayWorker,
+    "structura array": StructuraArrayWorker,
     "array with freeze": FrozenArrayWorker,
     "immutable List": ImmutableListWorker,
-    "immutable Map": ImmutableMapWorker,
+
     "immutable Set": ImmutableSetWorker,
-    Map: MapWorker,
     Set: SetWorker,
+
     sleep: SleepWorker,
     "overhead only": OverheadOnlyWorker,
 }

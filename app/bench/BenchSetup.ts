@@ -19,6 +19,7 @@ export type BenchMarkType =
     | "object with freeze"
     | "Set"
     | "Map"
+    | "Map with faster copy"
     | "immutable List" // List.withMutations()
     | "immutable Set" // Set.withMutations()
     | "immutable Map" // Map.withMutations()
@@ -33,19 +34,20 @@ export type BenchMarkType =
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     // maps
     "object",
-    "object with freeze",
-    "Map",
     "immutable Map",
-    "immer object",
     "structura object",
+    "object with freeze",
+    "immer object",
+    "Map",
+    "Map with faster copy",
     "divider",
 
     // arrays & lists
     "array",
-    "array with freeze",
     "immutable List",
-    "immer array",
     "structura array",
+    "array with freeze",
+    "immer array",
     "divider",
 
     // sets
