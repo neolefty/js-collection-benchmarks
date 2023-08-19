@@ -14,4 +14,4 @@ tasks:
   build:
     desc: "Build static files"
     cmds:
-      - pnpm build
+      - time pnpm build
