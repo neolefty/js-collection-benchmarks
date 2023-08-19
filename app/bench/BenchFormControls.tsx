@@ -32,7 +32,7 @@ export const BenchFormControls = ({ setup }: { setup: BenchSetup }) => (
                 className="btn btn-primary"
                 disabled={setup.start !== setup.running}
             >
-                {setup.running ? "Cancel" : "Start"}
+                {setup.running ? "Stop" : "Run"}
             </button>
             <button
                 disabled={setup.start || setup.running}
