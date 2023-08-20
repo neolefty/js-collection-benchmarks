@@ -1,20 +1,39 @@
 import { BenchMarkTypes, BenchSetup } from "@/app/bench/BenchSetup"
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 import { BenchmarkHeader2 } from "@/app/_util/BenchmarkHeader"
 
 // Rounding via scientific notation brings all the kids to the yard — avoid things like "3.0000004"
 // https://medium.com/@borisdedejski/rounding-numbers-on-x-decimal-places-in-javascript-5a4bc26e4149
 const round3 = (n: number) => Number(Math.round(n * 1000) + "e-3")
 
-export const BenchResultsDisplay = ({ setup }: { setup: BenchSetup }) => {
+export const BenchResultsDisplay = ({
+    setup,
+    onToggleSettings,
+    briefTitle,
+}: {
+    setup: BenchSetup
+    onToggleSettings: () => void
+    briefTitle?: boolean
+}) => {
+    const [expanded, setExpanded] = useState(true)
     const maxMs = Math.max(
         ...Object.values(setup.results).filter((x) => x !== Infinity && x),
     )
     return (
         Object.entries(setup.results).length > 0 && (
-            <>
-                <BenchmarkHeader2 className="mt-2">
-                    Benchmark Results
+            <section
+                aria-label="Results"
+                className="grid gap-3 grid-cols-2 justify-items-center items-center"
+            >
+                <BenchmarkHeader2 className="relative">
+                    {briefTitle ? "Results" : "JS Collection Benchmarks"}
+                    <button
+                        className="absolute right-0 top-0 btn btn-secondary text-4xl h-full rounded-r-none"
+                        title="Benchmark Settings"
+                        onClick={onToggleSettings}
+                    >
+                        ⚙
+                    </button>
                 </BenchmarkHeader2>
                 {BenchMarkTypes.map((benchType, i) => {
                     const elapsedMs = setup.results[benchType]
@@ -64,7 +83,7 @@ export const BenchResultsDisplay = ({ setup }: { setup: BenchSetup }) => {
                         </Fragment>
                     )
                 })}
-            </>
+            </section>
         )
     )
 }

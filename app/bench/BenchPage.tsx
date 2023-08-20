@@ -1,23 +1,31 @@
 "use client"
 
 import { useBenchSetup } from "@/app/bench/BenchSetup"
-import { BenchFormControls } from "@/app/bench/BenchFormControls"
+import { BenchForm } from "@/app/bench/BenchForm"
 import { BenchResultsDisplay } from "@/app/bench/BenchResultsDisplay"
 import { BenchDebug } from "@/app/bench/BenchDebug"
-import { useEffect, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 import { BenchmarkHeader2 } from "@/app/_util/BenchmarkHeader"
 
 export const BenchPage = ({
     showDebug,
     autoRun,
-    className,
+    briefTitle,
+    defaultShowSettings,
 }: {
     showDebug?: boolean
     autoRun?: boolean
     className?: string
+    briefTitle?: boolean
+    defaultShowSettings?: boolean
 }) => {
     const setup = useBenchSetup()
     const [autoRan, setAutoRan] = useState(false)
+    // noinspection PointlessBooleanExpressionJS
+    const [showSettings, toggleSettings] = useReducer(
+        (x) => !x,
+        !!defaultShowSettings,
+    )
     useEffect(() => {
         if (autoRun && !autoRan && !setup.start) {
             setAutoRan(true)
@@ -26,18 +34,22 @@ export const BenchPage = ({
     }, [autoRan, autoRun, setup])
     return (
         <>
-            <form
-                onSubmit={setup.running ? setup.onCancel : setup.onStart}
-                action="#"
-                className={
-                    "grid justify-items-center items-center gap-3 grid-cols-2 " +
-                        className || ""
-                }
-            >
-                <BenchFormControls setup={setup} />
-                <BenchResultsDisplay setup={setup} />
-                {showDebug && <BenchDebug setup={setup} />}
-            </form>
+            <div className="collapse rounded-none">
+                <input
+                    type="checkbox"
+                    defaultChecked={showSettings}
+                    className="hidden"
+                />
+                <div className="collapse-content p-0">
+                    <BenchForm setup={setup} />
+                </div>
+            </div>
+            <BenchResultsDisplay
+                setup={setup}
+                onToggleSettings={toggleSettings}
+                briefTitle={briefTitle}
+            />
+            {showDebug && <BenchDebug setup={setup} />}
         </>
     )
 }
