@@ -20,6 +20,7 @@ export const NavBar = () => (
         </h1>
         <Nav route="bench">Benchmarks</Nav>
         <Nav route="next">Next.js Guide</Nav>
+        <Nav route="unframed">Unframed</Nav>
     </header>
 )
 
