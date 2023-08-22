@@ -87,6 +87,22 @@ const ObjectWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
+const ObjectAssignWorker: BenchWorker = async (
+    basis,
+    iterations,
+    mutations,
+    debugLabel,
+) => {
+    let scratch = Object.assign(basis)
+    iterations.forEach(() => {
+        scratch = Object.assign(scratch)
+        mutations.forEach(
+            (i) => (scratch[Math.floor(Math.random() * basis.length)] = i),
+        )
+    })
+    if (debugLabel) console.log({ [debugLabel]: scratch })
+}
+
 const ImmerObjectWorker: BenchWorker = async (
     basis,
     iterations,
@@ -205,7 +221,7 @@ const MapWorker: BenchWorker = async (
     if (debugLabel) console.log({ [debugLabel]: scratch })
 }
 
-const MapFastCopyWorker: BenchWorker = async (
+const MapIterator: BenchWorker = async (
     basis,
     iterations,
     mutations,
@@ -267,13 +283,14 @@ const OverheadOnlyWorker: BenchWorker = async (
 }
 
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
-    object: ObjectWorker,
+    "object spread": ObjectWorker,
+    "object.assign": ObjectWorker,
     "object with freeze": FrozenObjectWorker,
     "immer object": ImmerObjectWorker,
     "structura object": StructuraObjectWorker,
     "immutable Map": ImmutableMapWorker,
     Map: MapWorker,
-    "Map with faster copy": MapFastCopyWorker,
+    "Map from iterator": MapIterator,
 
     array: ArrayWorker,
     "immer array": ImmerArrayWorker,

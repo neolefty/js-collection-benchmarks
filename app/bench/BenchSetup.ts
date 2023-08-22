@@ -15,11 +15,12 @@ import { useBenchRunner } from "@/app/bench/BenchRunner"
 export type BenchMarkType =
     | "array" // [...a]
     | "array with freeze" // [...a]
-    | "object" // {...o}
+    | "object spread" // {...o}
+    | "object.assign" // {...o}
     | "object with freeze"
     | "Set"
     | "Map"
-    | "Map with faster copy"
+    | "Map from iterator"
     | "immutable List" // List.withMutations()
     | "immutable Set" // Set.withMutations()
     | "immutable Map" // Map.withMutations()
@@ -33,13 +34,14 @@ export type BenchMarkType =
 
 export const BenchMarkTypes: ReadonlyArray<BenchMarkType> = [
     // maps
-    "object",
+    "object spread",
+    "object.assign",
     "immutable Map",
     "structura object",
     "object with freeze",
     "immer object",
     "Map",
-    "Map with faster copy",
+    "Map from iterator",
     "divider",
 
     // arrays & lists
