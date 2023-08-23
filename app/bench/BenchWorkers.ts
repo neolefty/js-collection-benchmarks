@@ -93,9 +93,9 @@ const ObjectAssignWorker: BenchWorker = async (
     mutations,
     debugLabel,
 ) => {
-    let scratch = Object.assign(basis)
+    let scratch: Record<number, number> = Object.assign({})
     iterations.forEach(() => {
-        scratch = Object.assign(scratch)
+        scratch = Object.assign({})
         mutations.forEach(
             (i) => (scratch[Math.floor(Math.random() * basis.length)] = i),
         )
@@ -284,7 +284,7 @@ const OverheadOnlyWorker: BenchWorker = async (
 
 export const BenchWorkers: Partial<Record<BenchMarkType, BenchWorker>> = {
     "object spread": ObjectWorker,
-    "object.assign": ObjectWorker,
+    "object.assign": ObjectAssignWorker,
     "object with freeze": FrozenObjectWorker,
     "immer object": ImmerObjectWorker,
     "structura object": StructuraObjectWorker,
